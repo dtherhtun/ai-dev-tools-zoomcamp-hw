@@ -1,0 +1,83 @@
+{% extends 'todos/base.html' %}
+
+{% block title %}My TODOs{% endblock %}
+
+{% block content %}
+<div class="header-card">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <h1 class="page-title">
+            <i class="fas fa-check-circle"></i>
+            My TODOs
+        </h1>
+        <a href="{% url 'todo_create' %}" class="btn-create">
+            <i class="fas fa-plus"></i> New TODO
+        </a>
+    </div>
+</div>
+
+{% if todos %}
+    {% for todo in todos %}
+        <div class="todo-item {% if todo.resolved %}completed{% endif %} {% if todo.is_overdue %}overdue{% endif %}">
+            <div class="todo-item-title">
+                {% if todo.resolved %}
+                    <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                {% else %}
+                    <i class="far fa-circle" style="color: #d1d5db;"></i>
+                {% endif %}
+                {{ todo.title }}
+            </div>
+
+            {% if todo.description %}
+                <div class="todo-desc">{{ todo.description }}</div>
+            {% endif %}
+
+            <div class="todo-badges">
+                {% if todo.is_overdue %}
+                    <span class="badge-custom badge-overdue">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Overdue
+                    </span>
+                {% endif %}
+                {% if todo.resolved %}
+                    <span class="badge-custom badge-completed">
+                        <i class="fas fa-check"></i>
+                        Completed
+                    </span>
+                {% endif %}
+                {% if todo.due_date %}
+                    <span class="badge-custom badge-due">
+                        <i class="far fa-calendar"></i>
+                        Due: {{ todo.due_date|date:"M d, Y" }}
+                    </span>
+                {% endif %}
+            </div>
+
+            <div class="btn-action-group">
+                <a href="{% url 'todo_toggle_resolved' todo.pk %}"
+                   class="btn-action {% if todo.resolved %}btn-warning{% else %}btn-success{% endif %}">
+                    {% if todo.resolved %}
+                        <i class="fas fa-undo"></i> Reopen
+                    {% else %}
+                        <i class="fas fa-check"></i> Complete
+                    {% endif %}
+                </a>
+                <a href="{% url 'todo_edit' todo.pk %}" class="btn-action btn-primary">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <a href="{% url 'todo_delete' todo.pk %}" class="btn-action btn-danger">
+                    <i class="fas fa-trash"></i> Delete
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="empty-box">
+        <i class="fas fa-clipboard-list"></i>
+        <h3>No TODOs yet</h3>
+        <p class="text-muted">Get started by creating your first TODO item</p>
+        <a href="{% url 'todo_create' %}" class="btn-create mt-3">
+            <i class="fas fa-plus"></i> Create First TODO
+        </a>
+    </div>
+{% endif %}
+{% endblock %}
