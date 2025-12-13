@@ -1,0 +1,64 @@
+openapi: 3.0.0
+info:
+  title: Code Interview Backend
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /sessions:
+    post:
+      summary: Create a new session
+      responses:
+        '201':
+          description: Session created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sessionId:
+                    type: string
+  /sessions/{sessionId}:
+    get:
+      summary: Get session info or join via WS (if upgrade header)
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Session metadata
+        '101':
+          description: Switching Protocols (WebSocket)
+  /execute:
+    post:
+      summary: Execute code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                language:
+                  type: string
+      responses:
+        '200':
+          description: Execution result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  output:
+                    type: string
+                  error:
+                    type: string
+                  executionTime:
+                    type: number
