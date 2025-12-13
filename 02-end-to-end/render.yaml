@@ -1,0 +1,58 @@
+services:
+  # Backend Service
+  - type: web
+    name: coding-platform-backend
+    runtime: docker
+    repo: https://github.com/dtherhtun/ai-dev-tools-zoomcamp-hw # Update with your username/repo if different
+    # Directory where Dockerfile is located
+    rootDir: 02-end-to-end/backend
+    plan: free # or starter
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: DB_HOST
+        fromDatabase:
+          name: coding-platform-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: coding-platform-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: coding-platform-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: coding-platform-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: coding-platform-db
+          property: password
+
+  # Frontend Service
+  - type: web
+    name: coding-platform-frontend
+    runtime: docker
+    rootDir: 02-end-to-end/frontend
+    plan: free
+    envVars:
+      # If frontend needs to know backend URL at build time, set it here.
+      # However, current nginx setup proxies or expects localhost?
+      # Wait, local/docker setup uses localhost:8080.
+      # In prod, frontend (browser) needs to access backend public URL.
+      # The frontend code currently hardcodes 'http://localhost:8080'.
+      # We need to make the API URL configurable in frontend!
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: coding-platform-backend
+          property: url
+
+databases:
+  - name: coding-platform-db
+    databaseName: coding_platform
+    user: coding_user
+    plan: free # or starter
+    ipAllowList: [] # Access from internal services only by default

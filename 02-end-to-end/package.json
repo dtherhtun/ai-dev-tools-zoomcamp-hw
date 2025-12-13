@@ -1,0 +1,18 @@
+{
+  "name": "02-end-to-end",
+  "version": "1.0.0",
+  "description": "A real-time collaborative coding interview platform with secure code execution.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && go run cmd/server/main.go",
+    "dev:frontend": "cd frontend && npm run dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
